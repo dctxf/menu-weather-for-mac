@@ -2,18 +2,20 @@
  * @Author: dctxf
  * @Date:   2017-02-08 15:24:54
  * @Last Modified by:   dctxf
- * @Last Modified time: 2017-02-08 17:58:15
+ * @Last Modified time: 2017-02-09 18:00:00
  */
 'use strict';
 const path = require('path');
-const request = require('request');
 const electron = require('electron');
-const xml2js = require('xml2js');
+
 const app = electron.app;
 const Tray = electron.Tray;
 const Menu = electron.Menu;
+const MenuItem = electron.MenuItem;
+const BrowserWindow = electron.BrowserWindow;
 const config = require('./config');
 const menu = require('./components/menu');
+const weather = require('./components/weather');
 
 let trayIcon = null;
 
@@ -43,6 +45,19 @@ function createMainWindow() {
 	return win;
 }
 
+function setTitle() {
+	weather.get(config.WEATHER, function(res) {
+		let weather;
+		if (typeof res === 'object') {
+			weather = res.city + ' ' + res.status1 + ' ' + res.temperature1 + res.temperature2 + '℃';
+		} else {
+			weather = res;
+		}
+		trayIcon.setTitle(weather);
+		console.log('time is setted');
+	});
+}
+
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
@@ -54,45 +69,35 @@ app.on('window-all-closed', () => {
 		mainWindow = createMainWindow();
 	}
 });*/
+app.setName(config.APP_NAME);
+app.dock.setIcon(path.join(__dirname, config.LOGO));
+app.dock.hide();
+app.on('will-finish-launching', () => {
+	// mainWindow = createMainWindow();
+	/*app set*/
+	menu();
+
+});
 
 app.on('ready', () => {
-	// mainWindow = createMainWindow();
-	app.setName(config.APP_NAME);
-	app.dock.setIcon(path.join(__dirname, config.LOGO))
-	menu();
+	/*tray set*/
 	let img = path.join(__dirname, config.ICON);
 	trayIcon = new Tray(img);
 	trayIcon.setTitle(config.APP_NAME);
 	trayIcon.setToolTip(config.APP_NAME);
-	request.get(config.WEATHER, function(err, res, req) {
-		if (err) {
-
-		} else {
-			let parser = new xml2js.Parser();
-			let weatherJSON;
-			parser.parseString(res.body, function(err, result) {
-				if (!err) {
-					weatherJSON = result.Profiles.Weather[0];
-					let weather = weatherJSON.city + ' ' + weatherJSON.status1 + ' ' + weatherJSON.temperature1 + weatherJSON.temperature2 + '度';
-					trayIcon.setTitle(weather);
-				}
-			});
-
+	setTitle();
+	let timer = setInterval(setTitle, 1000 * 60 * 60 * 6);
+	const contextMenu = Menu.buildFromTemplate([
+		/*{
+				label: '详细天气',
+				type: 'normal'
+			},*/
+		{
+			label: '⌘ 退出',
+			type: 'normal',
+			role: 'quit'
 		}
-	});
-	/*const contextMenu = Menu.buildFromTemplate([{
-		label: 'Item1',
-		type: 'radio'
-	}, {
-		label: 'Item2',
-		type: 'radio'
-	}, {
-		label: 'Item3',
-		type: 'radio',
-		checked: true
-	}, {
-		label: 'Item4',
-		type: 'radio'
-	}]);
-	trayIcon.setContextMenu(contextMenu);*/
+	]);
+	trayIcon.setContextMenu(contextMenu);
+	contextMenu.insert(0, contextMenu);
 });
