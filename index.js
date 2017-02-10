@@ -2,7 +2,7 @@
  * @Author: dctxf
  * @Date:   2017-02-08 15:24:54
  * @Last Modified by:   dctxf
- * @Last Modified time: 2017-02-10 11:27:38
+ * @Last Modified time: 2017-02-10 14:35:20
  */
 'use strict';
 const path = require('path');
@@ -96,7 +96,7 @@ app.on('ready', () => {
 				type: 'normal'
 			},*/
 		{
-			label: '⌘ 退出',
+			label: '退出(⌘+Q)',
 			type: 'normal',
 			role: 'quit'
 		}
