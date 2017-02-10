@@ -2,7 +2,7 @@
  * @Author: dctxf
  * @Date:   2017-02-08 15:24:54
  * @Last Modified by:   dctxf
- * @Last Modified time: 2017-02-09 18:00:00
+ * @Last Modified time: 2017-02-10 11:19:35
  */
 'use strict';
 const path = require('path');
@@ -54,7 +54,7 @@ function setTitle() {
 			weather = res;
 		}
 		trayIcon.setTitle(weather);
-		console.log('time is setted');
+		// console.log('time is setted');
 	});
 }
 
@@ -99,5 +99,5 @@ app.on('ready', () => {
 		}
 	]);
 	trayIcon.setContextMenu(contextMenu);
-	contextMenu.insert(0, contextMenu);
+	// contextMenu.insert(0, contextMenu);
 });
