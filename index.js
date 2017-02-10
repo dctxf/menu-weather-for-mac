@@ -2,7 +2,7 @@
  * @Author: dctxf
  * @Date:   2017-02-08 15:24:54
  * @Last Modified by:   dctxf
- * @Last Modified time: 2017-02-10 11:19:35
+ * @Last Modified time: 2017-02-10 11:27:38
  */
 'use strict';
 const path = require('path');
@@ -22,6 +22,11 @@ let trayIcon = null;
 // const appIcon = new Tray('./assets/logo.jpg');
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
+
+app.setName(config.APP_NAME);
+// app.dock.setIcon(path.join(__dirname, config.LOGO));
+app.dock.hide();
+
 
 // prevent window being garbage collected
 // let mainWindow;
@@ -69,9 +74,7 @@ app.on('window-all-closed', () => {
 		mainWindow = createMainWindow();
 	}
 });*/
-app.setName(config.APP_NAME);
-app.dock.setIcon(path.join(__dirname, config.LOGO));
-app.dock.hide();
+
 app.on('will-finish-launching', () => {
 	// mainWindow = createMainWindow();
 	/*app set*/
